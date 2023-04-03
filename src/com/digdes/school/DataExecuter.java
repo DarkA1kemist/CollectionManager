@@ -12,13 +12,13 @@ public class DataExecuter {
 
     }
     private static String[] stringValues;
-    private static String[] integerValues;
-    private static String[] floatValues;
+    private static String[] longValues;
+    private static String[] doubleValues;
     private static String[] booleanValues;
     static{
         stringValues = new String[]{"lastName"};
-        integerValues = new String[]{"age", "id"};
-        floatValues = new String[]{"cost"};
+        longValues = new String[]{"age", "id"};
+        doubleValues = new String[]{"cost"};
         booleanValues = new String[]{"active"};
     }
     public static Map<String, Object> getDataMap(String data) throws Exception{
@@ -49,7 +49,7 @@ public class DataExecuter {
             if ((key.startsWith("\"") || key.startsWith("\'")) || (key.endsWith("\"") || key.endsWith("\'"))) {
                 key = key.replace("\'", "");
                 key = key.replace("\"", "");
-                result.put(key, value);
+                if(!value.equals("null"))result.put(key, value);
 
             }
             else{
@@ -106,7 +106,7 @@ public class DataExecuter {
     }
     private static Object valueConverter(String key, String value) throws Exception{
         try{
-
+            if(value.equals("null")) return "";
             for(int i = 0 ; i < stringValues.length; i++){
                 if(key.equalsIgnoreCase(stringValues[i])){
                     if(value.contains("'")) return value.replace("'","").trim();
@@ -116,16 +116,16 @@ public class DataExecuter {
                     }
                 }
             }
-            for(int i = 0 ; i < integerValues.length; i++){
-                if(key.equalsIgnoreCase(integerValues[i])){
+            for(int i = 0 ; i < longValues.length; i++){
+                if(key.equalsIgnoreCase(longValues[i])){
                     if(value.equals("null")) return null;
-                    return Integer.parseInt(value);
+                    return Long.parseLong(value);
                 }
             }
-            for(int i = 0 ; i < floatValues.length; i++){
-                if(key.equalsIgnoreCase(floatValues[i])){
+            for(int i = 0 ; i < doubleValues.length; i++){
+                if(key.equalsIgnoreCase(doubleValues[i])){
                     if(value.equals("null")) return null;
-                    return Float.parseFloat(value);
+                    return Double.parseDouble(value);
                 }
             }
             for(int i = 0 ; i < booleanValues.length; i++){
@@ -150,14 +150,14 @@ public class DataExecuter {
                     return stringValues[i];
                 }
             }
-            for(int i = 0 ; i < integerValues.length; i++){
-                if(key.equalsIgnoreCase(integerValues[i])){
-                    return integerValues[i];
+            for(int i = 0 ; i < longValues.length; i++){
+                if(key.equalsIgnoreCase(longValues[i])){
+                    return longValues[i];
                 }
             }
-            for(int i = 0 ; i < floatValues.length; i++){
-                if(key.equalsIgnoreCase(floatValues[i])){
-                    return floatValues[i];
+            for(int i = 0 ; i < doubleValues.length; i++){
+                if(key.equalsIgnoreCase(doubleValues[i])){
+                    return doubleValues[i];
                 }
             }
             for(int i = 0 ; i < booleanValues.length; i++){
@@ -236,12 +236,12 @@ public class DataExecuter {
     }
     private static boolean checkKey(String key, String operator)throws Exception{ // Метод возвращающий true если значение по ключ можно использовать с оператором
         Map<String, String[][]> operators = new HashMap<>(); // Ключ - оператор, значение - массивы допустимых к нему ключей
-        operators.put(">=", new String[][]{floatValues,integerValues});
-        operators.put("<=", new String[][]{floatValues,integerValues});
-        operators.put(">", new String[][]{floatValues,integerValues});
-        operators.put("<", new String[][]{floatValues,integerValues});
-        operators.put("=", new String[][]{floatValues,integerValues,booleanValues,stringValues});
-        operators.put("!=", new String[][]{floatValues,integerValues,booleanValues,stringValues});
+        operators.put(">=", new String[][]{doubleValues,longValues});
+        operators.put("<=", new String[][]{doubleValues,longValues});
+        operators.put(">", new String[][]{doubleValues,longValues});
+        operators.put("<", new String[][]{doubleValues,longValues});
+        operators.put("=", new String[][]{doubleValues,longValues,booleanValues,stringValues});
+        operators.put("!=", new String[][]{doubleValues,longValues,booleanValues,stringValues});
         operators.put("like", new String[][]{stringValues});
         operators.put("ilike", new String[][]{stringValues});
 
@@ -266,22 +266,24 @@ public class DataExecuter {
     }
     private static boolean compareValues (String value1, String value2, String operator)throws Exception{
         // Все числовые значения можно сравнить приведя к типу Float без потери точности
+        if(value1.equals(""))value1 = "null";
+        if(value2.equals(""))value2 = "null";
         switch (operator){
             case ">=":
-                if(Float.parseFloat(value1) >= Float.parseFloat(value2))return true;
+                if(Double.parseDouble(value1) >= Double.parseDouble(value2))return true;
                 else return false;
 
 
             case "<=":
-                if(Float.parseFloat(value1) <= Float.parseFloat(value2))return true;
+                if(Double.parseDouble(value1) <= Double.parseDouble(value2))return true;
                 else return false;
 
             case ">":
-                if(Float.parseFloat(value1) > Float.parseFloat(value2))return true;
+                if(Double.parseDouble(value1) > Double.parseDouble(value2))return true;
                 else return false;
 
             case "<":
-                if(Float.parseFloat(value1) < Float.parseFloat(value2))return true;
+                if(Double.parseDouble(value1) < Double.parseDouble(value2))return true;
                 else return false;
 
             case "!=": //Числа можно сравнить в строковом виде, учтя формат строк(Сделано ранее)

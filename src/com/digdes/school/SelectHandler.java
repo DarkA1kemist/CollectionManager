@@ -26,6 +26,9 @@ public class SelectHandler implements RequestHandler {
                 }
 
             }
+            else{
+                throw new Exception("Select request need to be formed - select where condition");
+            }
 
         }
 
