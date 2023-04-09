@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class DataExecuter {
     private DataExecuter(){
-
+        //Пустой конструктор
     }
     private static String[] stringValues;
     private static String[] longValues;
