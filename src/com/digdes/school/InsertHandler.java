@@ -8,16 +8,20 @@ public class InsertHandler implements RequestHandler{
         if(request.split(" ")[0].equalsIgnoreCase( "insert")){
             if(request.split(" ")[1].equalsIgnoreCase( "values")){
                 if(!request.toLowerCase().split("values")[1].trim().equals( "")) {
+
                     request = request.split("(?i)values")[1];
                     collection.add(DataExecuter.getDataMap(request));
                     return collection;
+
                 }
                 else {
+
                     throw new Exception("Empty Request");
                 }
 
             }
             else {
+
                 throw new Exception("Request form is not valid");
             }
         }

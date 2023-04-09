@@ -56,8 +56,13 @@ public class DataExecuter {
                     throw new Exception("Key format is need to be '" + key + "'");
             }
         }
+        for(Map.Entry<String, String> item : result.entrySet()){
+            if(item.getValue()!=null){
+                return convertData(result);
+            }
+        }
+        throw new Exception("Empty request exception");
 
-        return convertData(result);
     }
     private static Map<String,Object> convertData(Map<String,String> data){
         Map<String, Object> result = new LinkedHashMap<>();
